@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Лабораторна робота 15</title>
+    <style>
+        body {
+            background-color: black;
+            color: pink;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        h1, h2 {
+            color: pink;
+            text-align: center;
+        }
+        
+        .task-section {
+            background-color: #1a1a1a;
+            border: 2px solid pink;
+            border-radius: 10px;
+            margin: 20px 0;
+            padding: 20px;
+        }
+        
+        input[type="text"], textarea {
+            background-color: #333;
+            color: pink;
+            border: 1px solid pink;
+            padding: 8px;
+            margin: 5px 0;
+            width: 80%;
+        }
+        
+        button {
+            background-color: pink;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        
+        button:hover {
+            background-color: #ffb6c1;
+        }
+        
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-left: 3px solid pink;
+        }
+    </style>
+</head>
+<body>
+    <h1>Лабораторна робота 15</h1>
+
+    <div class="task-section">
+        <h2>Завдання 1: Підрахувати кількість символів '.', що стоять перед пробілом, і замінити кожну пару символів 'ST' на символ 'P'.</h2>
+        <textarea id="inputText1" rows="4" cols="50">Тест. . .  Це STREET STOP</textarea><br>
+        <button onclick="processText1()">Обробити текст</button>
+        <div id="result1" class="result"></div>
+    </div>
+
+    <div class="task-section">
+        <h2>Завдання 2: Третє слово рядка поставити після першого. Визначити кількість слів, у яких перша та остання літери збігаються.</h2>
+        <textarea id="inputText2" rows="4" cols="50">один два три чотири око пʼять</textarea><br>
+        <button onclick="processText2()">Обробити текст</button>
+        <div id="result2" class="result"></div>
+    </div>
+
+    <div class="task-section">
+        <h2>Завдання 3: Шифрування (заміна на наступну літеру)</h2>
+        <input type="text" id="inputText3" size="50">
+        <button onclick="encrypt()">Зашифрувати</button>
+        <div id="result3" class="result"></div>
+    </div>
+
+    <div class="task-section">
+        <h2>Завдання 4: Шифрування (перемішування літер)</h2>
+        <input type="text" id="inputText4" size="50">
+        <button onclick="shuffleWords()">Зашифрувати</button>
+        <div id="result4" class="result"></div>
+    </div>
+
+    <script>
+        // Task 1
+        function processText1() {
+            const text = document.getElementById('inputText1').value;
+            
+            let dotsBeforeSpace = 0;
+            for (let i = 0; i < text.length - 1; i++) {
+                if (text[i] === '.' && text[i + 1] === ' ') {
+                    dotsBeforeSpace++;
+                }
+            }
+            
+            const replacedText = text.replace(/ST/g, 'P');
+            
+            document.getElementById('result1').innerHTML = `
+                <p>Кількість крапок перед пробілом: ${dotsBeforeSpace}</p>
+                <p>Текст після заміни ST на P: ${replacedText}</p>
+            `;
+        }
+
+        // Task 2
+        function processText2() {
+            const text = document.getElementById('inputText2').value;
+            let words = text.trim().split(/\s+/);
+            
+            if (words.length >= 3) {
+                const thirdWord = words[2];
+                words.splice(2, 1);
+                words.splice(1, 0, thirdWord);
+            }
+            
+            const sameLettersCount = words.filter(word => {
+                if (word.length < 1) return false;
+                return word[0].toLowerCase() === word[word.length - 1].toLowerCase();
+            }).length;
+            
+            document.getElementById('result2').innerHTML = `
+                <p>Текст після переміщення третього слова: ${words.join(' ')}</p>
+                <p>Кількість слів з однаковими першою та останньою літерами: ${sameLettersCount}</p>
+            `;
+        }
+
+        // Task 3
+        function encrypt() {
+            const text = document.getElementById('inputText3').value;
+            const ukrAlphabet = 'абвгґдеєжзиіїйклмнопрстуфхцчшщьюя';
+            
+            let result = text.toLowerCase().split('').map(char => {
+                if (ukrAlphabet.includes(char)) {
+                    const index = ukrAlphabet.indexOf(char);
+                    return ukrAlphabet[(index + 1) % ukrAlphabet.length];
+                }
+                return char;
+            }).join('');
+
+            document.getElementById('result3').innerHTML = `Результат: ${result}`;
+        }
+
+        // Task 4
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function shuffleWords() {
+            const text = document.getElementById('inputText4').value;
+            
+            const result = text.split(' ').map(word => {
+                if (word.length <= 3) return word;
+                
+                const middle = word.slice(1, -1).split('');
+                const shuffled = shuffleArray(middle);
+                return word[0] + shuffled.join('') + word[word.length - 1];
+            }).join(' ');
+
+            document.getElementById('result4').innerHTML = `Результат: ${result}`;
+        }
+    </script>
+</body>
+</html>
